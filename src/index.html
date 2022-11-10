@@ -353,50 +353,6 @@ Python messages appear here
     </script>
 
     <script>
-      const options = {
-        types: [
-          {
-            description: "Python Files",
-            accept: {
-              "text/x-python": [".py"],
-            },
-          },
-        ],
-      };
-
-      var butOpenFile = document.getElementById("OpenFile");
-      var butSaveFile = document.getElementById("Save");
-      var butSaveAs = document.getElementById("SaveAs");
-
-      butOpenFile.addEventListener("click", async () => {
-        // Destructure the one-element array.
-        [fileHandle] = await window.showOpenFilePicker(options);
-        const file = await fileHandle.getFile();
-        const contents = await file.text();
-        editor.setValue(contents);
-      });
-
-      butSaveAs.addEventListener("click", async () => {
-        fileHandle = await getNewFileHandle();
-        await writeFile(fileHandle, editor.getValue());
-      });
-
-      function save() {
-        alert("TODO");
-      }
-
-      butSaveFile.addEventListener("click", async () => {
-        if (!fileHandle) {
-          fileHandle = await getNewFileHandle();
-        }
-        await writeFile(fileHandle, editor.getValue());
-      });
-
-      async function getNewFileHandle() {
-        const handle = await window.showSaveFilePicker(options);
-        return handle;
-      }
-
       // initialise editor
       editor = ace.edit("editor");
       editor.setTheme("ace/theme/twilight");
