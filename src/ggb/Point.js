@@ -9,6 +9,7 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
     this.$ggbLabel = lbl;
 
     this.$updateHandlers = [];
+    ggbApi.registerObjectUpdateListener(lbl, () => this.$fireUpdateEvents());
   },
   slots: {
     tp$new(args, kwargs) {
