@@ -24,6 +24,11 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
     $yCoord() {
       return ggbApi.getYcoord(this.$ggbLabel);
     },
+    $fireUpdateEvents() {
+      this.$updateHandlers.forEach((fun) => {
+        Sk.misceval.callsimOrSuspend(fun);
+      });
+    },
   },
   methods: {
     when_moved: {
