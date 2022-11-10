@@ -15,4 +15,12 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
       return new Sk.builtins.Point(...args);
     },
   },
+  proto: {
+    $xCoord() {
+      return ggbApi.getXcoord(this.$ggbLabel);
+    },
+    $yCoord() {
+      return ggbApi.getYcoord(this.$ggbLabel);
+    },
+  },
 });
