@@ -165,17 +165,6 @@ Python messages appear here
         },
         bindKey: { mac: "cmd-enter", win: "ctrl-enter" },
       });
-
-      editor.commands.addCommand({
-        name: "save",
-        exec: async () => {
-          if (!fileHandle) {
-            fileHandle = await getNewFileHandle();
-          }
-          await writeFile(fileHandle, editor.getValue());
-        },
-        bindKey: { mac: "cmd-s", win: "ctrl-s" },
-      });
     </script>
   </body>
 </html>
