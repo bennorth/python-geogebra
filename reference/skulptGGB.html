@@ -1,0 +1,511 @@
+
+<html> 
+<head> 
+<script src="./skulpt.min.js"></script> 
+<script src="./skulpt-stdlib.js"></script> 
+<script src="./fs-helpers.js"></script> 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.11.2/ace.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.11.2/ext-language_tools.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.11.2/mode-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.11.2/theme-twilight.min.js"></script>
+
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<script src="https://www.geogebra.org/apps/deployggb.js"></script>
+
+
+ <style type="text/css" media="screen">
+    body {
+        overflow: hidden;
+    }
+
+    #editor {
+	width:700px;
+height:400px;
+        margin: 0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+  </style>
+  
+</head> 
+
+<body>
+
+
+<table width="100%">
+  <tr>
+    <td width="50%"><pre id="editor">
+# draw concentric circles
+for x in range(6):
+  circle(0, 0, x)
+  
+# draw a grid of points
+for x in range(5):
+  for y in range(5):
+    point(x, y)
+</pre></td>
+    <td width="50%" rowspan=5 >
+	
+        <div id="ggbApplet">
+	</div></td>
+  </tr>
+  <tr>
+  <td><button type="button" onclick="runit()">Run Python (&lt;Ctrl&gt;&lt;Enter&gt;)</button> 
+</td>
+  <tr/>
+  
+  <tr>
+<td>
+<button id = "Save" type="button">Save (&lt;Ctrl&gt;S)</button>
+<button id = "SaveAs" type="button">Save as...</button>
+<button id = "OpenFile" type="button">Open</button>
+<button id = "Reset" onclick="editor.setValue('');ggbApi.reset();"type="button">Reset</button>
+<button id = "Example1" type="button"
+onclick='editor.setValue("name = input(\"Enter your name:\")\nprint(\"Your name is: \" + name)");'
+>Example 1</button>
+<button id = "Example2" type="button"
+onclick='editor.setValue(`# draw concentric circles
+for x in range(6):
+  circle(0, 0, x)
+  
+# draw a grid of points
+for x in range(5):
+  for y in range(5):
+    point(x, y)
+`)'
+>Example 2</button>
+<button id = "Example3" type="button"
+onclick='editor.setValue(`# line through 2 points
+labelP1 = point(1,2)
+labelP2 = point(3,4)
+labelLine = line(labelP1,labelP2)
+print(labelP1 + " is a line through " + labelP1 + " and " + labelP2)
+`)'
+>Example 3</button>
+<button id = "Example4" type="button"
+onclick='editor.setValue(`# expoenential growth
+
+from math import *
+
+number = 1
+
+while True:
+  print(number)
+  number = number * 2
+  if number >= 10000:
+    break
+
+`)'
+>Example 4</button>
+<button id = "Example5" type="button"
+onclick='editor.setValue(`# draw a line and parabola and find the intersection
+num = slider(1,5,0.1)
+parabola = evalCommand("y=" + num + " x^2")
+line = evalCommand("y = x")
+print(parabola)
+print(line)
+P = intersect(parabola, line)
+setValue(num, 2)
+
+`)'>Example 5</button>
+
+
+
+<button id = "Example6" type="button"
+onclick='editor.setValue(`# Regression (best-fit)
+labelP1 = point(1,2)
+labelP2 = point(3,4)
+labelP3 = point(1,4)
+labelP4 = point(0,4)
+labelP5 = point(2,3)
+labelP6 = point(5,3)
+labelRegression = fitLine((labelP1,labelP2,labelP3,labelP4,labelP5,labelP6))
+print(labelRegression + " is a best fit line for " + labelP1 + " and " + labelP2 + " and " + labelP3 + " and " + labelP4 + " and " + labelP5 + " and " + labelP6)
+
+# regression quadratic
+labelRegression2 = fitPoly((labelP1,labelP2,labelP3,labelP4,labelP5,labelP6), 2)
+
+`)'
+>Example 6</button>
+
+<button id = "Example7" type="button"
+onclick='editor.setValue(`
+
+# https://github.com/skulpt/skulpt/blob/master/doc/suspensions.txt
+
+import time
+
+# draw concentric circles slowly
+for x in range(6):
+    circle(0, 0, x + 1)
+    # pause for 1 second between circles
+	# also makes sure browser isn’t blocked
+    time.sleep(1)
+
+@geogebra.when_key_pressed("ArrowDown")
+  def jump_down(self):
+	print("arrow down")
+
+@geogebra.when_point_moved("A")
+  def point_moved(self):
+	print("point moved")
+
+
+`)'
+>Example 7</button>
+
+
+
+<button id = "GitLab" type="button"
+onclick="window.open('https://git.geogebra.org/authoring/test-files/-/edit/main/~mike/skulpt/skulptGGB.html','_blank')"
+>Edit in GitLab</button>
+
+  </td>
+  </tr>
+  
+  <tr>
+  <td>
+   <textarea id="output" name="output" rows="10" cols="80">
+Python messages appear here
+ </textarea>
+ 
+
+  </td>
+  </tr>
+</table>
+
+
+
+<script> 
+
+var ggbApi;
+var editor;
+var oldconsole;
+var fileHandle;
+
+const GGB_POINT = "point";
+
+
+// output functions are configurable.  This one just appends some text
+// to a pre element.
+function outf(text) { 
+    var mypre = document.getElementById("output"); 
+    mypre.innerHTML = mypre.innerHTML + text; 
+	//alert(text);
+} 
+function builtinRead(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+            throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
+}
+
+// make prompt work better. default seems to do alert(a) then prompt()
+function customPrompt(a) {
+  return prompt(a);
+}
+
+// Here's everything you need to run a python program in skulpt
+// grab the code from your textarea
+// get a reference to your pre element for output
+// configure the output function
+// call Sk.importMainWithBody()
+function runit() { 
+   
+   // get contents of Ace editor
+   var prog = editor.getValue();
+   
+   var mypre = document.getElementById("output"); 
+   mypre.innerHTML = ''; 
+   Sk.pre = "output";
+   Sk.configure({
+   "output":outf,
+   "read":builtinRead,
+   "__future__": Sk.python3,
+   "inputfun": customPrompt,
+   "inputfunTakesPrompt": true /* then you need to output the prompt yourself */
+
+   }); 
+   
+   //(Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+   
+   var myPromise = Sk.misceval.asyncToPromise(function() {
+       return Sk.importMainWithBody("<stdin>", false, prog, true);
+   });
+   
+   myPromise.then(function(mod) {
+       //console.log('success');
+   },
+       function(err) {
+       console.log(err.toString());
+   });
+} 
+
+Sk.builtins.alert = new Sk.builtin.func(function (s) {
+	alert(Sk.ffi.remapToJs(s));
+});
+
+Sk.builtins.getValue = new Sk.builtin.func(function (v) {
+	var ret = ggbApi.getValue(Sk.ffi.remapToJs(v));
+	return Sk.ffi.remapToPy(ret);
+});
+
+Sk.builtins.setValue = new Sk.builtin.func(function (v, n) {
+	ggbApi.setValue(Sk.ffi.remapToJs(v), Sk.ffi.remapToJs(n));
+	return;
+});
+
+Sk.builtins.reset = new Sk.builtin.func(function () {
+	ggbApi.reset();
+	return;
+});
+
+Sk.builtins.circle = new Sk.builtin.func(function (x, y, r) {
+	var labels = ggbApi.evalCommandGetLabels("Circle((" + Sk.ffi.remapToJs(x) + "," + Sk.ffi.remapToJs(y) +")," + Sk.ffi.remapToJs(r) + ")");
+	return Sk.ffi.remapToPy(labels[0]);
+});
+
+Sk.builtins.point = new Sk.builtin.func(function (x, y) {
+	var labels = ggbApi.evalCommandGetLabels("(" + Sk.ffi.remapToJs(x) + "," + Sk.ffi.remapToJs(y) +")");
+	return Sk.ffi.remapToPy(labels[0]);
+});
+
+Sk.builtins.line = new Sk.builtin.func(function (pyLabel1, pyLabel2) {
+
+	var jsLabel1 = Sk.ffi.remapToJs(pyLabel1);
+	var jsLabel2 = Sk.ffi.remapToJs(pyLabel2);
+	
+	if (ggbApi.getObjectType(jsLabel1) != GGB_POINT) {
+		throw(jsLabel1 + " is not a point");
+	}
+	if (ggbApi.getObjectType(jsLabel2) != GGB_POINT) {
+		throw(jsLabel2 + " is not a point");
+	}
+
+	var labels = ggbApi.evalCommandGetLabels("Line(" + jsLabel1 + "," + jsLabel2 + ")");
+	return Sk.ffi.remapToPy(labels[0]);
+});
+
+Sk.builtins.intersect = new Sk.builtin.func(function (pyLabel1, pyLabel2) {
+
+	var jsLabel1 = Sk.ffi.remapToJs(pyLabel1);
+	var jsLabel2 = Sk.ffi.remapToJs(pyLabel2);
+
+	var labels = ggbApi.evalCommandGetLabels("{Intersect(" + jsLabel1 + "," + jsLabel2 + ")}");
+	return Sk.ffi.remapToPy(labels[0]);
+});
+
+Sk.builtins.slider = new Sk.builtin.func(function (pyMin, pyMax, pyIncrement) {
+
+	var jsMin = Sk.ffi.remapToJs(pyMin) || 0;
+	var jsMax = Sk.ffi.remapToJs(pyMax) || 5;
+	var jsIncrement = Sk.ffi.remapToJs(pyIncrement) || 0.1;
+
+	var labels = ggbApi.evalCommandGetLabels("Slider(" + jsMin + "," + jsMax + "," + jsIncrement + ")");
+	return Sk.ffi.remapToPy(labels[0]);
+});
+
+Sk.builtins.fitLine = new Sk.builtin.func(function (pyList) {
+
+	var jsList = Sk.ffi.remapToJs(pyList);
+
+	var ggbList = "{";
+	for (var i = 0 ; i < jsList.length ; i++) {
+	
+		if (ggbApi.getObjectType(jsList[i]) != GGB_POINT) {
+			throw(jsLabel1 + " is not a point");
+		}
+
+		ggbList += jsList[i] + ",";
+	}
+	// replace last , with }
+	ggbList = ggbList.replace(/.$/,"}");
+	
+	var labels = ggbApi.evalCommandGetLabels("FitLine(" + ggbList +")");
+	return Sk.ffi.remapToPy(labels[0]);
+});
+
+Sk.builtins.fitPoly = new Sk.builtin.func(function (pyList, pyNum) {
+
+	var jsList = Sk.ffi.remapToJs(pyList);
+	var jsNum = Math.round(Sk.ffi.remapToJs(pyNum));
+
+	var ggbList = "{";
+	for (var i = 0 ; i < jsList.length ; i++) {
+	
+		if (ggbApi.getObjectType(jsList[i]) != GGB_POINT) {
+			throw(jsLabel1 + " is not a point");
+		}
+
+		ggbList += jsList[i] + ",";
+	}
+	// replace last , with }
+	ggbList = ggbList.replace(/.$/,"}");
+	
+	var labels = ggbApi.evalCommandGetLabels("FitPoly(" + ggbList + "," + jsNum + ")");
+	return Sk.ffi.remapToPy(labels[0]);
+});
+
+Sk.builtins.deleteObject = new Sk.builtin.func(function (name) {
+	ggbApi.deleteObject(Sk.ffi.remapToJs(name));
+	return;
+});
+
+Sk.builtins.evalCommand = new Sk.builtin.func(function (s) {
+
+oldconsole(s);
+oldconsole(Sk.ffi.remapToJs(s));
+
+s.func_code();
+
+
+    var ret = ggbApi.evalCommandGetLabels(Sk.ffi.remapToJs(s));
+	return Sk.ffi.remapToPy(ret[0]);
+});
+
+
+
+</script> 
+
+
+
+<script>
+var parameters = {
+"id": "ggbApplet",
+"width":600,
+"height":600,
+"showMenuBar":false,
+"showAlgebraInput":false,
+"showToolBar":false,
+"customToolBar":"0 39 73 62 | 1 501 67 , 5 19 , 72 75 76 | 2 15 45 , 18 65 , 7 37 | 4 3 8 9 , 13 44 , 58 , 47 | 16 51 64 , 70 | 10 34 53 11 , 24  20 22 , 21 23 | 55 56 57 , 12 | 36 46 , 38 49  50 , 71  14  68 | 30 29 54 32 31 33 | 25 17 26 60 52 61 | 40 41 42 , 27 28 35 , 6",
+"showToolBarHelp":false,
+"showResetIcon":false,
+"enableLabelDrags":false,
+"enableShiftDragZoom":true,
+"enableRightClick":false,
+"errorDialogsActive":false,
+"useBrowserForJS":false,
+"allowStyleBar":false,
+"preventFocus":false,
+"showZoomButtons":true,
+// add code here to run when the applet starts
+"appletOnLoad":function(api){ 
+
+ggbApi = api;
+
+ggbApi.setPerspective("G");
+ggbApi.evalCommand("CenterView((0,0))");
+
+oldconsole = console.log;
+console.log = function(msg) {
+oldconsole("Logging to Python console: "+msg);
+
+// filter messages from GeoGebra
+if (!msg.startsWith("[LaTeX]") && !msg.startsWith("============== restarted ===============")) {
+	document.getElementById("output").innerHTML += "\n" + msg;
+}
+
+}
+
+ggbApi.registerUpdateListener(function(label) {
+
+console.log("FOR BEN: object " + label + " moved");
+
+});
+
+ },
+"showFullscreenButton":true,
+"scale":1,
+"disableAutoScale":false,
+"allowUpscale":false,
+"clickToLoad":false,
+"appName":"classic",
+"buttonRounding":0.7,
+"buttonShadows":false,
+"language":"en",
+};
+var applet = new GGBApplet(parameters, true);
+window.onload = function() {applet.inject('ggbApplet')};
+</script>
+
+
+<script>
+
+const options = {
+    types: [
+      {
+        description: 'Python Files',
+        accept: {
+          'text/x-python': ['.py'],
+        },
+      },
+    ],
+  };
+
+var butOpenFile = document.getElementById("OpenFile");
+var butSaveFile = document.getElementById("Save");
+var butSaveAs = document.getElementById("SaveAs");
+
+butOpenFile.addEventListener('click', async () => {
+  // Destructure the one-element array.
+  [fileHandle] = await window.showOpenFilePicker(options);
+  const file = await fileHandle.getFile();
+  const contents = await file.text();
+  editor.setValue(contents);
+});
+
+butSaveAs.addEventListener('click', async () => {
+  fileHandle = await getNewFileHandle();
+  await writeFile(fileHandle, editor.getValue());
+});
+
+function save() {
+alert("TODO");
+}
+
+butSaveFile.addEventListener('click', async () => {
+	  if (!fileHandle) {
+	fileHandle = await getNewFileHandle();
+  }
+  await writeFile(fileHandle, editor.getValue());
+
+});
+
+async function getNewFileHandle() {
+  
+  const handle = await window.showSaveFilePicker(options);
+  return handle;
+}
+
+// initialise editor
+    editor = ace.edit("editor");
+    editor.setTheme("ace/theme/twilight");
+    editor.session.setMode("ace/mode/python");
+	editor.setFontSize(20);
+	
+	// Ctrl-Enter in editor -> run Python code
+	editor.commands.addCommand({
+    name: "exec",
+    exec: function() {runit()},
+    bindKey: {mac: "cmd-enter", win: "ctrl-enter"}
+});
+
+	editor.commands.addCommand({
+    name: "save",
+    exec: async () => {
+	  if (!fileHandle) {
+	fileHandle = await getNewFileHandle();
+  }
+  await writeFile(fileHandle, editor.getValue());
+
+},
+    bindKey: {mac: "cmd-s", win: "ctrl-s"}
+});
+</script>
+
+</body> 
+
+</html> 
