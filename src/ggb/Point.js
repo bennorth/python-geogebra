@@ -7,6 +7,8 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
     const lbl = ggbApi.evalCommandGetLabels(cmd);
 
     this.$ggbLabel = lbl;
+
+    this.$updateHandlers = [];
   },
   slots: {
     tp$new(args, kwargs) {
@@ -21,6 +23,15 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
     },
     $yCoord() {
       return ggbApi.getYcoord(this.$ggbLabel);
+    },
+  },
+  methods: {
+    when_moved: {
+      $meth(pyFun) {
+        this.$updateHandlers.push(pyFun);
+        return pyFun;
+      },
+      $flags: { OneArg: true },
     },
   },
   getsets: {
