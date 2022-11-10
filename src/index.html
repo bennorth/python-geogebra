@@ -35,16 +35,24 @@
       <tr>
         <td width="50%">
           <pre id="editor">
-# draw concentric circles
-for x in range(6):
-  circle(0, 0, x)
+import math
 
-# draw a grid of points
-for x in range(5):
-  for y in range(5):
-    point(x, y)
-</pre
-          >
+a = Point(3, 4)
+b = Point(0, 2)
+c = Point(5, 1)
+k1 = Line(a, b)
+k2 = Line(b, c)
+k3 = Line(c, a)
+
+@a.when_moved
+def find_area():
+    ab = Distance(a, b)
+    bc = Distance(b, c)
+    ca = Distance(c, a)
+    s = 0.5 * (ab + bc + ca)
+    A = math.sqrt(s * (s - ab) * (s - bc) * (s - ca))
+    print(A)
+          </pre>
         </td>
         <td width="50%" rowspan="5">
           <div id="ggbApplet"></div>
