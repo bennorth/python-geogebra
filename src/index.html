@@ -118,6 +118,7 @@ Python messages appear here
           ggbApi.evalCommand("CenterView((0,0))");
 
           oldconsole = console.log;
+          /*
           console.log = function (msg) {
             oldconsole("Logging to Python console: " + msg);
 
@@ -129,6 +130,7 @@ Python messages appear here
               document.getElementById("output").innerHTML += "\n" + msg;
             }
           };
+          */
 
           ggbApi.registerUpdateListener(function (label) {
             console.log("FOR BEN: object " + label + " moved");
