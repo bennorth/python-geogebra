@@ -33,6 +33,16 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
       // Hm; mildly annoying:
       ggbApi.setCoords(this.$ggbLabel, this.$xCoord(), y);
     },
+    $color() {
+      return ggbApi.getColor(this.$ggbLabel);
+    },
+    $setColor(color) {
+      // TODO: Validate input.  Assumes "#rrggbb".
+      const r = Number.parseInt(color.substring(1, 3), 16);
+      const g = Number.parseInt(color.substring(3, 5), 16);
+      const b = Number.parseInt(color.substring(5, 7), 16);
+      ggbApi.setColor(this.$ggbLabel, r, g, b);
+    },
     $fireUpdateEvents() {
       this.$updateHandlers.forEach((fun) => {
         Sk.misceval.callsimOrSuspend(fun);
