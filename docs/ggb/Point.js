@@ -22,8 +22,26 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
     $xCoord() {
       return ggbApi.getXcoord(this.$ggbLabel);
     },
+    $setXCoord(x) {
+      // Hm; mildly annoying:
+      ggbApi.setCoords(this.$ggbLabel, x, this.$yCoord());
+    },
     $yCoord() {
       return ggbApi.getYcoord(this.$ggbLabel);
+    },
+    $setYCoord(y) {
+      // Hm; mildly annoying:
+      ggbApi.setCoords(this.$ggbLabel, this.$xCoord(), y);
+    },
+    $color() {
+      return ggbApi.getColor(this.$ggbLabel);
+    },
+    $setColor(color) {
+      // TODO: Validate input.  Assumes "#rrggbb".
+      const r = Number.parseInt(color.substring(1, 3), 16);
+      const g = Number.parseInt(color.substring(3, 5), 16);
+      const b = Number.parseInt(color.substring(5, 7), 16);
+      ggbApi.setColor(this.$ggbLabel, r, g, b);
     },
     $fireUpdateEvents() {
       this.$updateHandlers.forEach((fun) => {
@@ -45,10 +63,31 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
       $get() {
         return new Sk.builtin.float_(this.$xCoord());
       },
+      $set(pyX) {
+        if (!Sk.builtin.checkNumber(pyX))
+          throw new Sk.builtin.TypeError("x coord must be number");
+        this.$setXCoord(Sk.ffi.remapToJs(pyX));
+      },
     },
     y: {
       $get() {
         return new Sk.builtin.float_(this.$yCoord());
+      },
+      $set(pyY) {
+        if (!Sk.builtin.checkNumber(pyY))
+          throw new Sk.builtin.TypeError("y coord must be number");
+        this.$setYCoord(Sk.ffi.remapToJs(pyY));
+      },
+    },
+    color: {
+      $get() {
+        return new Sk.builtin.str(this.$color());
+      },
+      $set(pyColor) {
+        if (!Sk.builtin.checkString(pyColor))
+          throw new Sk.builtin.TypeError("color must be string");
+        // TODO: It must also be the right sort of string.
+        this.$setColor(Sk.ffi.remapToJs(pyColor));
       },
     },
   },
