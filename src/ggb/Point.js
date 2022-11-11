@@ -79,5 +79,16 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
         this.$setYCoord(Sk.ffi.remapToJs(pyY));
       },
     },
+    color: {
+      $get() {
+        return new Sk.builtin.str(this.$color());
+      },
+      $set(pyColor) {
+        if (!Sk.builtin.checkString(pyColor))
+          throw new Sk.builtin.TypeError("color must be string");
+        // TODO: It must also be the right sort of string.
+        this.$setColor(Sk.ffi.remapToJs(pyColor));
+      },
+    },
   },
 });
