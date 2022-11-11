@@ -53,10 +53,20 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
       $get() {
         return new Sk.builtin.float_(this.$xCoord());
       },
+      $set(pyX) {
+        if (!Sk.builtin.checkNumber(pyX))
+          throw new Sk.builtin.TypeError("x coord must be number");
+        this.$setXCoord(Sk.ffi.remapToJs(pyX));
+      },
     },
     y: {
       $get() {
         return new Sk.builtin.float_(this.$yCoord());
+      },
+      $set(pyY) {
+        if (!Sk.builtin.checkNumber(pyY))
+          throw new Sk.builtin.TypeError("y coord must be number");
+        this.$setYCoord(Sk.ffi.remapToJs(pyY));
       },
     },
   },
