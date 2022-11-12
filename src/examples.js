@@ -75,17 +75,21 @@ setValue(num, 2)
 		case 6: 
 			return `
 # Regression (best-fit)
-labelP1 = point(1,2)
-labelP2 = point(3,4)
-labelP3 = point(1,4)
-labelP4 = point(0,4)
-labelP5 = point(2,3)
-labelP6 = point(5,3)
-labelRegression = fitLine((labelP1,labelP2,labelP3,labelP4,labelP5,labelP6))
-print(labelRegression + " is a best fit line for " + labelP1 + " and " + labelP2 + " and " + labelP3 + " and " + labelP4 + " and " + labelP5 + " and " + labelP6)
+P1 = Point(1,2)
+P2 = Point(3,4)
+P3 = Point(1,4)
+P4 = Point(0,4)
+P5 = Point(2,3)
+P6 = Point(5,3)
+
+# regression line
+regressionLine = FitPoly((P1,P2,P3,P4,P5,P6), 1)
+
 
 # regression quadratic
-labelRegression2 = fitPoly((labelP1,labelP2,labelP3,labelP4,labelP5,labelP6), 2)
+regressionParabola = FitPoly((P1,P2,P3,P4,P5,P6), 2)
+
+print("Now try dragging the points!")
 
 `
 		case 7: 
@@ -101,6 +105,30 @@ for x in range(6):
 `;
 		case 8: 
 			return `
+import math
+
+a = Point(3, 4)
+b = Point(0, 2)
+c = Point(5, 1)
+k1 = Line(a, b)
+k2 = Line(b, c)
+k3 = Line(c, a)
+
+print("Drag the points to see the area change")
+
+@a.when_moved
+@b.when_moved
+@c.when_moved
+def find_area():
+    ab = Distance(a, b)
+    bc = Distance(b, c)
+    ca = Distance(c, a)
+    s = 0.5 * (ab + bc + ca)
+    A = math.sqrt(s * (s - ab) * (s - bc) * (s - ca))
+    print("Area = " + str(A))
+	
+	
+find_area()
 `;
 		case 9: 
 			return `
