@@ -7,7 +7,10 @@ Sk.builtins.Line = Sk.abstr.buildNativeClass("Line", {
       throw new Sk.builtin.TypeError("not GGB things");
 
     const cmd = `Line(${ggbLabel1}, ${ggbLabel2})`;
-    this.$ggbLabel = ggbApi.evalCommandGetLabels(cmd);
+	
+	// returns list, take first element
+	// TODO: check valid
+    this.$ggbLabel = ggbApi.evalCommandGetLabels(cmd)[0];
   },
   slots: {
     tp$new(args, kwargs) {
