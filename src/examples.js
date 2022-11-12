@@ -132,7 +132,15 @@ find_area()
 `;
 		case 9: 
 			return `
-# Python code goes here
+# setting / getting properties
+
+A=Point(1,2)
+A.x=3
+A.color="red"
+print("y-coordinate of a is " + str(A.y))
+print("A's color is " + A.color)
+
+
 `;
 		case 10: 
 			return `
