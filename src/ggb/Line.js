@@ -8,9 +8,7 @@ Sk.builtins.Line = Sk.abstr.buildNativeClass("Line", {
 
     const cmd = `Line(${ggbLabel1}, ${ggbLabel2})`;
 	
-	// returns list, take first element
-	// TODO: check valid
-    this.$ggbLabel = ggbApi.evalCommandGetLabels(cmd)[0];
+    this.$ggbLabel = ggbApi.evalCommandGetLabels(cmd);
   },
   slots: {
     tp$new(args, kwargs) {

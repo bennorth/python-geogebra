@@ -6,9 +6,7 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
     const cmd = `(${x}, ${y})`;
     const lbl = ggbApi.evalCommandGetLabels(cmd);
 
-	// returns list, take first element
-	// TODO: check valid
-    this.$ggbLabel = lbl[0];
+    this.$ggbLabel = lbl;
 
     this.$updateHandlers = [];
     ggbApi.registerObjectUpdateListener(lbl, () => this.$fireUpdateEvents());

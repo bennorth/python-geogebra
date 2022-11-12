@@ -24,15 +24,11 @@ Sk.builtins.FitPoly = Sk.abstr.buildNativeClass("FitPoly", {
   // replace last , with }
   ggbList = ggbList.replace(/.$/, "}");
   
-  oldconsole(ggbList);
-
 	  
 	  // "FitPoly(" + ggbList + "," + jsNum + ")"
 	    const cmd = `FitPoly(${ggbList}, ${jsNumOrLabel})`;
 	
-	// returns list, take first element
-	// TODO: check valid
-    this.$ggbLabel = ggbApi.evalCommandGetLabels(cmd)[0];
+    this.$ggbLabel = ggbApi.evalCommandGetLabels(cmd);
 
   },
   slots: {

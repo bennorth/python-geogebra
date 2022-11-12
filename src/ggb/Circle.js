@@ -20,10 +20,7 @@ Sk.builtins.Circle = Sk.abstr.buildNativeClass("Circle", {
 		cmd = `Circle((${ggbLabel1}, ${ggbLabel2}), ${ggbLabel3})`;
   }
   
-  oldconsole(cmd);
-	// returns list, take first element
-	// TODO: check valid
-    this.$ggbLabel = ggbApi.evalCommandGetLabels(cmd)[0];
+    this.$ggbLabel = ggbApi.evalCommandGetLabels(cmd);
   },
   slots: {
     tp$new(args, kwargs) {
