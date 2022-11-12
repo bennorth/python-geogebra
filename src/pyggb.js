@@ -184,11 +184,6 @@ Sk.builtins.deleteObject = new Sk.builtin.func(function (name) {
 });
 
 Sk.builtins.evalCommand = new Sk.builtin.func(function (s) {
-  oldconsole(s);
-  oldconsole(Sk.ffi.remapToJs(s));
-
-  s.func_code();
-
   var ret = ggbApi.evalCommandGetLabels(Sk.ffi.remapToJs(s));
   return Sk.ffi.remapToPy(ret[0]);
 });

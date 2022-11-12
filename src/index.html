@@ -59,9 +59,28 @@ def find_area():
       </tr>
       <tr>
         <td>
-          <button type="button" onclick="runit()">
+          <button type="button" onclick="ggbApi.reset();runit()">
             Run Python (&lt;Ctrl&gt;&lt;Enter&gt;)
           </button>
+		 
+
+		 <select onchange="loadExample(this.value*1);" name="examples" id="examples">
+    <option value="0">Load example</option>
+  <option value="1" >Example 1</option>
+  <option value="2">Example 2</option>
+  <option value="3">Example 3</option>
+  <option value="4">Example 4</option>
+  <option value="5">Example 5</option>
+  <option value="6">Example 6</option>
+  <option value="7">Example 7</option>
+  <option value="8">Example 8</option>
+  <option value="9">Example 9</option>
+  <option value="10">Example 10</option>
+  <option value="11">Example 11</option>
+  <option value="12">Example 12</option>
+</select>
+
+
         </td>
       </tr>
 
@@ -89,8 +108,10 @@ Python messages appear here
     </table>
 
     <script src="./pyggb.js"></script>
+    <script src="./examples.js"></script>
     <script src="./ggb/Point.js"></script>
     <script src="./ggb/Line.js"></script>
+    <script src="./ggb/Circle.js"></script>
     <script src="./ggb/Distance.js"></script>
 
     <script>
@@ -121,8 +142,11 @@ Python messages appear here
           ggbApi.evalCommand("CenterView((0,0))");
 
           oldconsole = console.log;
-          /*
+          
           console.log = function (msg) {
+		  
+		  msg = msg + "";	  
+		  
             oldconsole("Logging to Python console: " + msg);
 
             // filter messages from GeoGebra
@@ -133,13 +157,8 @@ Python messages appear here
               document.getElementById("output").innerHTML += "\n" + msg;
             }
           };
-          */
+          
 
-          /*
-          ggbApi.registerUpdateListener(function (label) {
-            console.log("FOR BEN: object " + label + " moved");
-          });
-          */
         },
         showFullscreenButton: true,
         scale: 1,
