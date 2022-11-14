@@ -38,7 +38,7 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
     },
     $setColor(color) {
       // TODO: Validate input.  Assumes "#rrggbb".
-	  // need to support "red" as well
+      // need to support "red" as well
       const r = Number.parseInt(color.substring(1, 3), 16);
       const g = Number.parseInt(color.substring(3, 5), 16);
       const b = Number.parseInt(color.substring(5, 7), 16);
@@ -88,8 +88,8 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
         if (!Sk.builtin.checkString(pyColor))
           throw new Sk.builtin.TypeError("color must be string");
         // TODO: It must also be the right sort of string.
-		// "red" OK
-		// "#00FF00" OK
+        // "red" OK
+        // "#00FF00" OK
         this.$setColor(Sk.ffi.remapToJs(pyColor));
       },
     },

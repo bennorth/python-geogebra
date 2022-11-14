@@ -1,14 +1,13 @@
 Sk.builtins.FitPoly = Sk.abstr.buildNativeClass("FitPoly", {
   constructor: function FitPoly(pyList, pyObj) {
-	  
-	window.pyList = pyList;
-	    
-	// TODO: check why remapToJs() isn't working 
-	// and remove hack
-	//var jsList = Sk.ffi.remapToJs(pyList);
-	var jsList = pyList.v;
-	  
-	// check first for GGB object, then assume numbers
+    window.pyList = pyList;
+
+    // TODO: check why remapToJs() isn't working
+    // and remove hack
+    //var jsList = Sk.ffi.remapToJs(pyList);
+    var jsList = pyList.v;
+
+    // check first for GGB object, then assume numbers
     const jsNumOrLabel = pyObj.$ggbLabel || Math.round(Sk.ffi.remapToJs(pyObj));
 
     var ggbList = "{";
@@ -20,11 +19,10 @@ Sk.builtins.FitPoly = Sk.abstr.buildNativeClass("FitPoly", {
     }
     // replace last , with }
     ggbList = ggbList.replace(/.$/, "}");
-  
-    const cmd = `FitPoly(${ggbList}, ${jsNumOrLabel})`;
-	
-    this.$ggbLabel = ggbApi.evalCommandGetLabels(cmd);
 
+    const cmd = `FitPoly(${ggbList}, ${jsNumOrLabel})`;
+
+    this.$ggbLabel = ggbApi.evalCommandGetLabels(cmd);
   },
   slots: {
     tp$new(args, kwargs) {
