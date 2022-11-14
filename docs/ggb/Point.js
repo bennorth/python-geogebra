@@ -17,6 +17,12 @@ Sk.builtins.Point = Sk.abstr.buildNativeClass("Point", {
       Sk.abstr.checkArgsLen("Point", args, 2, 2);
       return new Sk.builtins.Point(...args);
     },
+    tp$str() {
+      return new Sk.builtin.str(`(${this.$xCoord()}, ${this.$yCoord()})`);
+    },
+    $r() {
+      return new Sk.builtin.str(`Point(${this.$xCoord()}, ${this.$yCoord()})`);
+    },
   },
   proto: {
     $xCoord() {
