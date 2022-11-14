@@ -1,11 +1,6 @@
 Sk.builtins.FitPoly = Sk.abstr.buildNativeClass("FitPoly", {
   constructor: function FitPoly(pyList, pyObj) {
-    window.pyList = pyList;
-
-    // TODO: check why remapToJs() isn't working
-    // and remove hack
-    //var jsList = Sk.ffi.remapToJs(pyList);
-    var jsList = pyList.v;
+    const jsList = Sk.misceval.arrayFromIterable(pyList);
 
     // check first for GGB object, then assume numbers
     const jsNumOrLabel = pyObj.$ggbLabel || Math.round(Sk.ffi.remapToJs(pyObj));
