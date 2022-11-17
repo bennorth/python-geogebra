@@ -80,6 +80,13 @@ print("Hello World!")
           >
             Reset
           </button>
+          <button
+            id="OpenInClassic"
+            onclick="openInClassic()"
+            type="button"
+          >
+            Open in GeoGebra
+          </button>
         </td>
       </tr>
 
@@ -178,6 +185,14 @@ Python messages appear here
         },
         bindKey: { mac: "cmd-enter", win: "ctrl-enter" },
       });
+	  
+		function openInClassic() {
+
+			// MUST be same domain
+			var win = window.open('./classic.html');	
+			win.ggbBase64 = ggbApi.getBase64();
+		
+		}
     </script>
   </body>
 </html>

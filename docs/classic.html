@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<script src="https://www.geogebra.org/apps/deployggb.js"></script>
+
+</head>
+<body>
+<div id="ggbApplet"></div>
+
+<script>
+var parameters = {
+"id": "ggbApplet",
+"app":true,
+"appletOnLoad":function(api){ 
+
+	if (window.ggbBase64) {
+		// avoid infinite loop!
+		var copy = window.ggbBase64;
+		window.ggbBase64 = undefined;
+		api.setBase64(copy);
+
+	} 
+
+},
+"appName":"classic",
+"showLogging":false,
+};
+
+var applet = new GGBApplet(parameters, true);
+window.onload = function() {applet.inject('ggbApplet')};
+</script>
+</body>
+</html>
